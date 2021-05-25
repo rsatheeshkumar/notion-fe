@@ -21,6 +21,8 @@ export const DetailPage = ({ state, setState, history }) => {
       return;
     }
 
+    console.log(destination, source, result);
+
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
@@ -45,14 +47,10 @@ export const DetailPage = ({ state, setState, history }) => {
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
       const newColumn = { ...start, taskIds: newTaskIds };
-      const newState = {
+      setState({
         ...state,
-        columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn,
-        },
-      };
-      setState(newState);
+        columns: { ...state.columns, [newColumn.id]: newColumn },
+      });
     }
 
     const startTaskIds = Array.from(start.taskIds);
@@ -64,16 +62,14 @@ export const DetailPage = ({ state, setState, history }) => {
     const newStart = { ...start, taskIds: startTaskIds };
     const newFinish = { ...finish, taskIds: finishTaskIds };
 
-    const newState = {
+    setState({
       ...state,
       columns: {
         ...state.columns,
         [newStart.id]: newStart,
         [newFinish.id]: newFinish,
       },
-    };
-
-    setState(newState);
+    });
   };
 
   return (
@@ -83,9 +79,9 @@ export const DetailPage = ({ state, setState, history }) => {
           <Container {...provided.droppableProps} ref={provided.innerRef}>
             {state.columnOrder.map((columnId, index) => {
               const column = state.columns[columnId];
-              const tasks = state.columns[columnId].taskIds.map(
-                (taskId) => state.tasks[taskId]
-              );
+              const tasks = state.columns[columnId].taskIds
+                .map((taskId) => state.tasks[taskId])
+                .filter(Boolean);
               return (
                 <Column
                   key={column.id}

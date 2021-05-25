@@ -4,14 +4,6 @@ import { v4 as uuid } from "uuid";
 import { NewItem } from "./new-item";
 
 export const AddItemPage = ({ state, setState, history }) => {
-  const { tasks, columns } = state;
-  // {state.columnOrder.map((columnId, index) => {
-  //   const columns = state.columns[columnId];
-  //   const tasks = state.columns[columnId].taskIds.map(
-  //     (taskId) => state.tasks[taskId]
-  //   );
-  console.log(state);
-
   const {
     column = "not-started",
     id = uuid(),
@@ -23,15 +15,21 @@ export const AddItemPage = ({ state, setState, history }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(newTitle, newDescription);
 
     if (newTitle && newDescription) {
       setState((prev) => ({
         ...prev,
-        tasks: [
+        tasks: {
           ...prev.tasks,
-          { [tasks["task-id"]]: { id, newTitle, newDescription } },
-        ],
+          [id]: { id, title: newTitle, description: newDescription },
+        },
+        columns: {
+          ...prev.columns,
+          [column]: {
+            ...prev.columns[column],
+            taskIds: [...prev.columns[column].taskIds, id],
+          },
+        },
       }));
       setNewTitle("");
       setNewDescription("");
@@ -40,16 +38,26 @@ export const AddItemPage = ({ state, setState, history }) => {
   };
 
   const onDelete = () => {
-    console.log(tasks.filter((tasksItems) => tasksItems.id !== id));
-    console.log({
-      [column]: state.details[column].filter(
-        (columnItem) => columnItem.id !== id
-      ),
-    });
+    const newTasks = { ...state.tasks };
+    delete newTasks[id];
+    setState((prev) => ({
+      ...prev,
+      tasks: newTasks,
+      columns: {
+        ...prev.columns,
+        [column]: {
+          ...prev.columns[column],
+          taskIds: [
+            ...prev.columns[column].taskIds.filter((itemId) => item !== id),
+          ],
+        },
+      },
+    }));
+    history.push("/");
   };
 
   const isView = type === "view";
-  const item = isView ? tasks.find((item) => item.id === id) : null;
+  const item = isView ? state.tasks[id] : null;
 
   return (
     <div className="row">

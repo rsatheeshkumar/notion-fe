@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Draggable, Droppable } from "react-beautiful-dnd";
-import Task from "./card";
 import { Link } from "react-router-dom";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuid } from "uuid";
+import Task from "./card";
 
 const Container = styled.div`
   margin: 8px;
@@ -27,6 +27,13 @@ const Title = styled.div`
   font-weight: bold;
 `;
 
+const Move = styled.div`
+  width: 20px;
+  height: 20px;
+  background: orange;
+  border-radius: 50%;
+`;
+
 const TaskList = styled.div`
   padding: 8px;
   flex-grow: 1;
@@ -40,6 +47,7 @@ const Column = ({ column, tasks, index }) => {
         <Container {...provided.draggableProps} ref={provided.innerRef}>
           <Header>
             <Title>{column.title}</Title>
+            <Move {...provided.dragHandleProps}></Move>
           </Header>
           <Droppable droppableId={column.id} type="task">
             {(provided) => (
@@ -49,13 +57,13 @@ const Column = ({ column, tasks, index }) => {
                     key={task.id}
                     task={task}
                     index={index}
-                    column={column}
+                    columnId={column.id}
                   />
                 ))}
                 {provided.placeholder}
                 <Link
                   className="btn btn-white text-secondary"
-                  to={`/add-item?id=${uuid()}&column=${column.title}&type=new`}
+                  to={`/add-item?column=${column.id}&type=new&id=${uuid()}`}
                 >
                   + New
                 </Link>
