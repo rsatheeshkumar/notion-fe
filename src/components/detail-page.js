@@ -1,4 +1,5 @@
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Column from "./column";
 
@@ -21,7 +22,7 @@ export const DetailPage = ({ state, setState, history }) => {
       return;
     }
 
-    console.log(destination, source, result);
+    // console.log(destination, source, result);
 
     if (
       destination.droppableId === source.droppableId &&
@@ -73,28 +74,40 @@ export const DetailPage = ({ state, setState, history }) => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="all-columns" direction="horizontal" type="column">
-        {(provided) => (
-          <Container {...provided.droppableProps} ref={provided.innerRef}>
-            {state.columnOrder.map((columnId, index) => {
-              const column = state.columns[columnId];
-              const tasks = state.columns[columnId].taskIds
-                .map((taskId) => state.tasks[taskId])
-                .filter(Boolean);
-              return (
-                <Column
-                  key={column.id}
-                  column={column}
-                  tasks={tasks}
-                  index={index}
-                />
-              );
-            })}
-            {provided.placeholder}
-          </Container>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable
+          droppableId="all-columns"
+          direction="horizontal"
+          type="column"
+        >
+          {(provided) => (
+            <Container {...provided.droppableProps} ref={provided.innerRef}>
+              {state.columnOrder.map((columnId, index) => {
+                const column = state.columns[columnId];
+                const tasks = state.columns[columnId].taskIds
+                  .map((taskId) => state.tasks[taskId])
+                  .filter(Boolean);
+                return (
+                  <Column
+                    key={column.id}
+                    column={column}
+                    tasks={tasks}
+                    index={index}
+                  />
+                );
+              })}
+              {provided.placeholder}
+            </Container>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Link
+        className="btn btn-white text-secondary p-2 m-2 border border-secondary"
+        to="/add-column"
+      >
+        + New Column
+      </Link>
+    </>
   );
 };

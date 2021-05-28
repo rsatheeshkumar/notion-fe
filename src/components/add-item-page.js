@@ -69,7 +69,7 @@ export const AddItemPage = ({ state, setState, history }) => {
                 <span>{item.title}</span>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   onClick={onDelete}
                 ></button>
               </div>

@@ -1,4 +1,5 @@
 import { Switch, Route, Redirect } from "react-router-dom";
+import AddColumn from "./components/add-column";
 import { AddItemPage } from "./components/add-item-page";
 
 import { DetailPage } from "./components/detail-page";
@@ -50,6 +51,13 @@ const App = () => {
           path="/add-item"
           render={(props) => (
             <AddItemPage {...props} state={state} setState={setState} />
+          )}
+        />
+        <Route
+          exact
+          path="/add-column"
+          render={(props) => (
+            <AddColumn {...props} state={state} setState={setState} />
           )}
         />
         <Redirect to="/" />
